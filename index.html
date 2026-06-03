@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>Denní menu</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #fff; color: #1a1a1a; }
+    .page { max-width: 680px; margin: 0 auto; padding: 1rem 1rem 3rem; }
+    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; padding-top: 0.5rem; }
+    .date { font-size: 13px; color: #888; margin-bottom: 2px; }
+    h1 { font-size: 22px; font-weight: 500; }
+    .refresh-btn { font-size: 14px; padding: 8px 14px; background: transparent; border: 0.5px solid #ccc; border-radius: 8px; cursor: pointer; color: #333; white-space: nowrap; }
+    .refresh-btn:disabled { opacity: 0.5; }
+    .tier-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: #aaa; margin: 0 0 10px; }
+    .section { margin-bottom: 1.5rem; }
+    .card { background: #fff; border: 0.5px solid #e0e0e0; border-radius: 12px; padding: 0.9rem 1.1rem; margin-bottom: 10px; }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+    .rest-name { font-size: 15px; font-weight: 500; }
+    .rest-domain { font-size: 12px; color: #999; margin-top: 2px; }
+    .open-link { font-size: 13px; color: #0066cc; text-decoration: none; white-space: nowrap; padding-left: 8px; }
+    .divider { border-top: 0.5px solid #f0f0f0; margin-bottom: 10px; }
+    .menu-list { list-style: none; }
+    .menu-item { font-size: 14px; color: #333; padding: 4px 0; border-bottom: 0.5px solid #f5f5f5; line-height: 1.5; }
+    .menu-item:last-child { border-bottom: none; }
+    .status-msg { font-size: 13px; color: #aaa; background: #fafafa; border-radius: 6px; padding: 7px 10px; }
+    .closed-msg { font-size: 13px; color: #e07000; background: #fff8f0; border-radius: 6px; padding: 7px 10px; }
+    .footer { text-align: center; font-size: 12px; color: #ccc; margin-top: 1.5rem; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div>
+        <p class="date" id="date-str"></p>
+        <h1>Denní menu</h1>
+      </div>
+      <button class="refresh-btn" id="refresh-btn" onclick="loadMenus()">↻ Načíst znovu</button>
+    </div>
+    <div id="content"></div>
+    <p class="footer" id="footer"></p>
+  </div>
+
+  <script>
+    const DAYS = ['neděle','pondělí','úterý','středa','čtvrtek','pátek','sobota']
+    const MONTHS = ['ledna','února','března','dubna','května','června','července','srpna','září','října','listopadu','prosince']
+    const TIER_LABELS = { top: '⭐ Top nabídka', ok: 'OK nabídka', ostatni: 'Ostatní' }
+
+    function getDateStr() {
+      const d = new Date()
+      return `${DAYS[d.getDay()]} ${d.getDate()}. ${MONTHS[d.getMonth()]} ${d.getFullYear()}`
+    }
+
+    function getTimeStr() {
+      const d = new Date()
+      return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`
+    }
+
+    function getDomain(url) {
+      try { return new URL(url).hostname.replace('www.','') } catch { return url }
+    }
+
+    function renderCard(r, loading) {
+      const header = `
+        <div class="card-header">
+          <div>
+            <p class="rest-name">${r.name}</p>
+            <p class="rest-domain">${getDomain(r.url)}</p>
+          </div>
+          <a class="open-link" href="${r.url}" target="_blank" rel="noreferrer">↗ Otevřít</a>
+        </div>
+        <div class="divider"></div>`
+
+      let body = ''
+      if (r.type === 'closed') {
+        body = `<p class="closed-msg">Dočasně zavřeno</p>`
+      } else if (r.type === 'link') {
+        body = `<p class="status-msg">Menu nelze načíst automaticky — otevři stránku</p>`
+      } else if (loading) {
+        body = `<p class="status-msg">Načítám…</p>`
+      } else if (r.menu && r.menu.length > 0) {
+        body = `<ul class="menu-list">${r.menu.map(i => `<li class="menu-item">${i}</li>`).join('')}</ul>`
+      } else {
+        body = `<p class="status-msg">Menu se nepodařilo načíst — zkus otevřít stránku</p>`
+      }
+
+      return `<div class="card">${header}${body}</div>`
+    }
+
+    function renderAll(data, loading) {
+      const content = document.getElementById('content')
+      let html = ''
+      for (const tier of ['top','ok','ostatni']) {
+        const items = data.filter(r => r.tier === tier)
+        if (!items.length) continue
+        html += `<div class="section"><p class="tier-label">${TIER_LABELS[tier]}</p>`
+        items.forEach(r => { html += renderCard(r, loading) })
+        html += '</div>'
+      }
+      content.innerHTML = html
+    }
+
+    async function loadMenus() {
+      const btn = document.getElementById('refresh-btn')
+      btn.disabled = true
+      btn.textContent = '…'
+
+      const placeholder = [
+        { id:'phillscorner', name:"Phill's Corner", url:'https://www.phillscorner.cz/menu/', tier:'top', type:'webnode', menu:null },
+        { id:'ctyrka', name:'Čtyrka', url:'https://www.ctyr-ka.cz', tier:'top', type:'webnode', menu:null },
+        { id:'twenty7', name:'Twenty7', url:'https://www.twenty7.cz', tier:'top', type:'closed', menu:null },
+        { id:'vnitroblock', name:'Vnitroblock', url:'https://www.vnitroblock.cz/obedove-menu', tier:'top', type:'link', menu:null },
+        { id:'mexicka', name:'Mexická Holešovice', url:'https://www.mexickaholesovice.cz/menu/', tier:'top', type:'link', menu:null },
+        { id:'homekitchen', name:'Home Kitchen', url:'https://home-kitchen.cz', tier:'ok', type:'link', menu:null },
+        { id:'osada', name:'Osada', url:'https://osada.choiceqr.com/section:odpoledni-nabidka/odpoledni-nabidka', tier:'ok', type:'link', menu:null },
+        { id:'puglia', name:'Puglia (Czechotel)', url:'https://www.czechotel.com/puglia-menu/', tier:'ok', type:'link', menu:null },
+        { id:'podparou', name:'Pod Párou', url:'https://podparou.eu/denni-menu/', tier:'ok', type:'podparou', menu:null },
+        { id:'uholise', name:'U Holíše', url:'https://www.restauraceuholise.cz', tier:'ostatni', type:'link', menu:null },
+        { id:'eatery', name:'The Eatery', url:'https://www.theeatery.cz/cz/#/', tier:'ostatni', type:'link', menu:null },
+      ]
+
+      renderAll(placeholder, true)
+
+      try {
+        const res = await fetch('/.netlify/functions/menus')
+        const data = await res.json()
+        renderAll(data, false)
+        document.getElementById('footer').textContent = `Naposledy načteno dnes v ${getTimeStr()}`
+      } catch (e) {
+        renderAll(placeholder, false)
+        document.getElementById('footer').textContent = 'Chyba při načítání'
+      }
+
+      btn.disabled = false
+      btn.textContent = '↻ Načíst znovu'
+    }
+
+    document.getElementById('date-str').textContent = getDateStr()
+    loadMenus()
+  </script>
+</body>
+</html>
