@@ -12,30 +12,33 @@ const RESTAURANTS = [
   { id: 'eatery', name: 'The Eatery', url: 'https://www.theeatery.cz/cz/#/', tier: 'ostatni', type: 'link' },
 ]
 
-function stripHtml(html) {
+function htmlToLines(html) {
   return html
     .replace(/<script[\s\S]*?<\/script>/gi, '')
     .replace(/<style[\s\S]*?<\/style>/gi, '')
-    .replace(/<[^>]+>/g, ' ')
+    .replace(/<[^>]+>/g, '\n')
     .replace(/&nbsp;/g, ' ')
     .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
-    .replace(/\s{2,}/g, ' ')
+}
+
+function stripHtml(html) {
+  return htmlToLines(html).replace(/\s{2,}/g, ' ')
 }
 
 function extractWebnode(html) {
-  const text = stripHtml(html)
+  const text = htmlToLines(html)
   const start = text.search(/Polévka|polévka/)
   if (start === -1) return null
   const enders = ['Snídaně', 'Na čepu', 'Breakfast', 'Předkrmy', 'Saláty', 'Sendviče', '© 20', 'Košík']
-  let end = start + 1800
+  let end = start + 2000
   for (const e of enders) {
     const pos = text.indexOf(e, start + 60)
     if (pos > 0 && pos < end) end = pos
   }
   return text.slice(start, end)
-    .split(/\s{3,}|\n/)
+    .split('\n')
     .map(l => l.trim())
     .filter(l => l.length > 5 && l.length < 220)
     .slice(0, 12)
