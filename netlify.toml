@@ -1,6 +1,6 @@
-toml[build]
+[build]
+  base = "Denne menu (apk)/denne-menu-app"
   command = "npm run build"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
