@@ -3,142 +3,354 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#ffffff" />
   <title>Denní menu</title>
+
+  <!-- Hamburger favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍔</text></svg>" />
+
+  <!-- Apple touch icon (canvas-generated) -->
+  <script>
+    (function () {
+      const c = document.createElement('canvas')
+      c.width = 180; c.height = 180
+      const ctx = c.getContext('2d')
+      ctx.fillStyle = '#fff'
+      ctx.fillRect(0, 0, 180, 180)
+      ctx.font = '120px serif'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillText('🍔', 90, 95)
+      const link = document.createElement('link')
+      link.rel = 'apple-touch-icon'
+      link.href = c.toDataURL()
+      document.head.appendChild(link)
+    })()
+  </script>
+
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #fff; color: #1a1a1a; }
-    .page { max-width: 680px; margin: 0 auto; padding: 1rem 1rem 3rem; }
-    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; padding-top: 0.5rem; }
-    .date { font-size: 13px; color: #888; margin-bottom: 2px; }
-    h1 { font-size: 22px; font-weight: 500; }
-    .refresh-btn { font-size: 14px; padding: 8px 14px; background: transparent; border: 0.5px solid #ccc; border-radius: 8px; cursor: pointer; color: #333; white-space: nowrap; }
-    .refresh-btn:disabled { opacity: 0.5; }
-    .tier-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: #aaa; margin: 0 0 10px; }
-    .section { margin-bottom: 1.5rem; }
-    .card { background: #fff; border: 0.5px solid #e0e0e0; border-radius: 12px; padding: 0.9rem 1.1rem; margin-bottom: 10px; }
-    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-    .rest-name { font-size: 15px; font-weight: 500; }
-    .rest-domain { font-size: 12px; color: #999; margin-top: 2px; }
-    .open-link { font-size: 13px; color: #0066cc; text-decoration: none; white-space: nowrap; padding-left: 8px; }
-    .divider { border-top: 0.5px solid #f0f0f0; margin-bottom: 10px; }
-    .menu-list { list-style: none; }
-    .menu-item { font-size: 14px; color: #333; padding: 4px 0; border-bottom: 0.5px solid #f5f5f5; line-height: 1.5; }
-    .menu-item:last-child { border-bottom: none; }
-    .status-msg { font-size: 13px; color: #aaa; background: #fafafa; border-radius: 6px; padding: 7px 10px; }
-    .closed-msg { font-size: 13px; color: #e07000; background: #fff8f0; border-radius: 6px; padding: 7px 10px; }
-    .footer { text-align: center; font-size: 12px; color: #ccc; margin-top: 1.5rem; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f2f2f7;
+      color: #1c1c1e;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #fff;
+      border-bottom: 1px solid #e5e5ea;
+      padding: 16px 16px 12px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1c1c1e;
+    }
+
+    header p {
+      font-size: 13px;
+      color: #8e8e93;
+      margin-top: 2px;
+    }
+
+    .refresh-btn {
+      display: block;
+      margin: 12px auto 0;
+      font-size: 13px;
+      color: #007aff;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+
+    main {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 12px 12px 32px;
+    }
+
+    .tier-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #8e8e93;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 12px 4px 5px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      margin-bottom: 6px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    /* Row — cards with menu (expandable) */
+    .card-row {
+      display: flex;
+      align-items: center;
+      padding: 11px 12px;
+      gap: 8px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    .card-row:active { background: #f2f2f7; }
+
+    /* Row — cards without menu (not expandable) */
+    .card-row.no-expand {
+      cursor: default;
+    }
+
+    .card-row.no-expand:active { background: transparent; }
+
+    .chevron {
+      color: #c7c7cc;
+      font-size: 18px;
+      width: 18px;
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+      line-height: 1;
+    }
+
+    .chevron.open { transform: rotate(90deg); }
+
+    .card-left {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .card-name {
+      font-size: 15px;
+      font-weight: 500;
+      color: #1c1c1e;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-domain {
+      font-size: 12px;
+      color: #8e8e93;
+      margin-top: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .btn-call {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      color: #3c3c43;
+      border: 1px solid #c7c7cc;
+      border-radius: 8px;
+      padding: 5px 10px;
+      background: transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+      text-decoration: none;
+    }
+
+    .btn-call:active { background: #f2f2f7; }
+
+    .btn-call svg {
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+    }
+
+    .btn-open {
+      font-size: 12px;
+      color: #007aff;
+      text-decoration: none;
+      padding: 5px 4px;
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Menu body */
+    .menu-body {
+      display: none;
+      border-top: 1px solid #f2f2f7;
+      padding: 10px 14px 12px;
+    }
+
+    .menu-body.open { display: block; }
+
+    .menu-line {
+      font-size: 13px;
+      color: #3c3c43;
+      line-height: 1.55;
+      padding: 1px 0;
+    }
+
+    .menu-line.heading {
+      font-weight: 600;
+      color: #1c1c1e;
+      margin-top: 6px;
+    }
+
+    .menu-line.heading:first-child { margin-top: 0; }
+
+    /* Loading state */
+    .loading {
+      text-align: center;
+      padding: 40px 16px;
+      color: #8e8e93;
+      font-size: 15px;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #e5e5ea;
+      border-top-color: #007aff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-bottom: 8px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
-  <div class="page">
-    <div class="header">
-      <div>
-        <p class="date" id="date-str"></p>
-        <h1>Denní menu</h1>
-      </div>
-      <button class="refresh-btn" id="refresh-btn" onclick="loadMenus()">↻ Načíst znovu</button>
-    </div>
-    <div id="content"></div>
-    <p class="footer" id="footer"></p>
+
+<header>
+  <h1>Denní menu</h1>
+  <p id="date-label"></p>
+  <button class="refresh-btn" onclick="loadMenus()">↻ Aktualizovat</button>
+</header>
+
+<main id="main">
+  <div class="loading">
+    <div class="spinner"></div><br>Načítám menu…
   </div>
+</main>
 
-  <script>
-    const DAYS = ['neděle','pondělí','úterý','středa','čtvrtek','pátek','sobota']
-    const MONTHS = ['ledna','února','března','dubna','května','června','července','srpna','září','října','listopadu','prosince']
-    const TIER_LABELS = { top: '⭐ Top nabídka', ok: 'OK nabídka', ostatni: 'Ostatní' }
+<script>
+  const DAYS = ['Neděle','Pondělí','Úterý','Středa','Čtvrtek','Pátek','Sobota']
+  const MONTHS = ['ledna','února','března','dubna','května','června','července','srpna','září','října','listopadu','prosince']
 
-    function getDateStr() {
-      const d = new Date()
-      return `${DAYS[d.getDay()]} ${d.getDate()}. ${MONTHS[d.getMonth()]} ${d.getFullYear()}`
+  function formatDate() {
+    const d = new Date()
+    return `${DAYS[d.getDay()]}, ${d.getDate()}. ${MONTHS[d.getMonth()]} ${d.getFullYear()}`
+  }
+
+  document.getElementById('date-label').textContent = formatDate()
+
+  function getDomain(url) {
+    try {
+      return new URL(url).hostname.replace(/^www\./, '')
+    } catch { return url }
+  }
+
+  function toggle(id) {
+    const body = document.getElementById('mb-' + id)
+    const chev = document.getElementById('ch-' + id)
+    if (!body) return
+    const open = body.classList.toggle('open')
+    chev.classList.toggle('open', open)
+  }
+
+  function renderCard(r) {
+    const hasMenu = r.menu && r.menu.length > 0
+    const domain = getDomain(r.url)
+
+    let menuHtml = ''
+    if (hasMenu) {
+      menuHtml = r.menu.map(line => {
+        const isHeading = /^(Polévka|Jídlo dne|Hlavní|Příloha|Dezert|Nápoj)/i.test(line)
+        return `<div class="menu-line${isHeading ? ' heading' : ''}">${line}</div>`
+      }).join('')
     }
 
-    function getTimeStr() {
-      const d = new Date()
-      return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`
-    }
-
-    function getDomain(url) {
-      try { return new URL(url).hostname.replace('www.','') } catch { return url }
-    }
-
-    function renderCard(r, loading) {
-      const header = `
-        <div class="card-header">
-          <div>
-            <p class="rest-name">${r.name}</p>
-            <p class="rest-domain">${getDomain(r.url)}</p>
+    if (hasMenu) {
+      return `
+        <div class="card">
+          <div class="card-row" onclick="toggle('${r.id}')">
+            <span class="chevron" id="ch-${r.id}">›</span>
+            <div class="card-left">
+              <div class="card-name">${r.name}</div>
+            </div>
+            <div class="card-actions" onclick="event.stopPropagation()">
+              <a class="btn-call" href="tel:${r.phone}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.22 1.22 2 2 0 012.2 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.18 6.18l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+                </svg>
+                Zavolat
+              </a>
+              <a class="btn-open" href="${r.url}" target="_blank" rel="noopener">Otevřít ↗</a>
+            </div>
           </div>
-          <a class="open-link" href="${r.url}" target="_blank" rel="noreferrer">↗ Otevřít</a>
-        </div>
-        <div class="divider"></div>`
-
-      let body = ''
-      if (r.type === 'closed') {
-        body = `<p class="closed-msg">Dočasně zavřeno</p>`
-      } else if (r.type === 'link') {
-        body = `<p class="status-msg">Menu nelze načíst automaticky — otevři stránku</p>`
-      } else if (loading) {
-        body = `<p class="status-msg">Načítám…</p>`
-      } else if (r.menu && r.menu.length > 0) {
-        body = `<ul class="menu-list">${r.menu.map(i => `<li class="menu-item">${i}</li>`).join('')}</ul>`
-      } else {
-        body = `<p class="status-msg">Menu se nepodařilo načíst — zkus otevřít stránku</p>`
-      }
-
-      return `<div class="card">${header}${body}</div>`
+          <div class="menu-body" id="mb-${r.id}">${menuHtml}</div>
+        </div>`
+    } else {
+      return `
+        <div class="card">
+          <div class="card-row no-expand">
+            <div class="card-left">
+              <div class="card-name">${r.name}</div>
+              <div class="card-domain">${domain}</div>
+            </div>
+            <div class="card-actions">
+              <a class="btn-call" href="tel:${r.phone}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.22 1.22 2 2 0 012.2 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.18 6.18l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+                </svg>
+                Zavolat
+              </a>
+              <a class="btn-open" href="${r.url}" target="_blank" rel="noopener">Otevřít ↗</a>
+            </div>
+          </div>
+        </div>`
     }
+  }
 
-    function renderAll(data, loading) {
-      const content = document.getElementById('content')
-      let html = ''
-      for (const tier of ['top','ok','ostatni']) {
-        const items = data.filter(r => r.tier === tier)
-        if (!items.length) continue
-        html += `<div class="section"><p class="tier-label">${TIER_LABELS[tier]}</p>`
-        items.forEach(r => { html += renderCard(r, loading) })
-        html += '</div>'
-      }
-      content.innerHTML = html
+  function renderAll(data) {
+    const top = data.filter(r => r.tier === 'top')
+    const ostatni = data.filter(r => r.tier === 'ostatni')
+
+    let html = '<div class="tier-label">⭐ Top nabídka</div>'
+    html += top.map(renderCard).join('')
+    html += '<div class="tier-label">Ostatní</div>'
+    html += ostatni.map(renderCard).join('')
+
+    document.getElementById('main').innerHTML = html
+  }
+
+  async function loadMenus() {
+    document.getElementById('main').innerHTML = '<div class="loading"><div class="spinner"></div><br>Načítám menu…</div>'
+    try {
+      const res = await fetch('/.netlify/functions/menus')
+      const data = await res.json()
+      renderAll(data)
+    } catch (e) {
+      document.getElementById('main').innerHTML = '<div class="loading">Chyba při načítání. Zkuste to znovu.</div>'
     }
+  }
 
-    async function loadMenus() {
-      const btn = document.getElementById('refresh-btn')
-      btn.disabled = true
-      btn.textContent = '…'
+  loadMenus()
+</script>
 
-      const placeholder = [
-        { id:'phillscorner', name:"Phill's Corner", url:'https://www.phillscorner.cz/menu/', tier:'top', type:'webnode', menu:null },
-        { id:'ctyrka', name:'Čtyrka', url:'https://www.ctyr-ka.cz', tier:'top', type:'webnode', menu:null },
-        { id:'twenty7', name:'Twenty7', url:'https://www.twenty7.cz', tier:'top', type:'closed', menu:null },
-        { id:'vnitroblock', name:'Vnitroblock', url:'https://www.vnitroblock.cz/obedove-menu', tier:'top', type:'link', menu:null },
-        { id:'mexicka', name:'Mexická Holešovice', url:'https://www.mexickaholesovice.cz/menu/', tier:'top', type:'link', menu:null },
-        { id:'homekitchen', name:'Home Kitchen', url:'https://home-kitchen.cz', tier:'ok', type:'link', menu:null },
-        { id:'osada', name:'Osada', url:'https://osada.choiceqr.com/section:odpoledni-nabidka/odpoledni-nabidka', tier:'ok', type:'link', menu:null },
-        { id:'puglia', name:'Puglia (Czechotel)', url:'https://www.czechotel.com/puglia-menu/', tier:'ok', type:'link', menu:null },
-        { id:'podparou', name:'Pod Párou', url:'https://podparou.eu/denni-menu/', tier:'ok', type:'podparou', menu:null },
-        { id:'uholise', name:'U Holíše', url:'https://www.restauraceuholise.cz', tier:'ostatni', type:'link', menu:null },
-        { id:'eatery', name:'The Eatery', url:'https://www.theeatery.cz/cz/#/', tier:'ostatni', type:'link', menu:null },
-      ]
-
-      renderAll(placeholder, true)
-
-      try {
-        const res = await fetch('/.netlify/functions/menus')
-        const data = await res.json()
-        renderAll(data, false)
-        document.getElementById('footer').textContent = `Naposledy načteno dnes v ${getTimeStr()}`
-      } catch (e) {
-        renderAll(placeholder, false)
-        document.getElementById('footer').textContent = 'Chyba při načítání'
-      }
-
-      btn.disabled = false
-      btn.textContent = '↻ Načíst znovu'
-    }
-
-    document.getElementById('date-str').textContent = getDateStr()
-    loadMenus()
-  </script>
 </body>
 </html>
