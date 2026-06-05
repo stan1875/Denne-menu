@@ -164,7 +164,7 @@
       width: 14px;
       height: 14px;
       transition: transform 0.2s ease;
-      color: #c7c7cc;
+      color: #0f7cff;
     }
 
     .chevron svg {
@@ -177,7 +177,7 @@
 
     .card-domain {
       font-size: 12px;
-      color: #0f7cff;
+      color: #8e8e93;
       margin-top: 1px;
       white-space: nowrap;
       overflow: hidden;
@@ -426,9 +426,9 @@
     const top     = data.filter(r => r.tier === 'top')
     const ostatni = data.filter(r => r.tier === 'ostatni')
 
-    let html = '<div class="tier-label">⭐ Top nabídka</div>'
+    let html = '<div class="tier-label">★ Top nabídka</div>'
     html += top.map(renderCard).join('')
-    html += '<div class="tier-label">Ostatní</div>'
+    html += '<div class="tier-label">☆ Ostatní</div>'
     html += ostatni.map(renderCard).join('')
     html += `<div class="last-updated">Naposledy načteno dnes v ${formatTime(new Date())}</div>`
 
