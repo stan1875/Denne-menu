@@ -5,6 +5,7 @@ const RESTAURANTS = [
   { id: 'vnitroblock', name: 'Vnitroblock', url: 'https://www.vnitroblock.cz/obedove-menu', tier: 'top', type: 'link', phone: '+420732373069' },
   { id: 'mexicka', name: 'Mexická', url: 'https://www.mexickaholesovice.cz/', tier: 'top', type: 'link', phone: '+420241952157' },
   { id: 'ema', name: 'EMA', url: 'https://www.emaespressobar.cz/komunardu-praha-7', tier: 'top', type: 'link', phone: '+420739797767' },
+    { id: 'ema', name: 'EMA 2', url: 'https://cdn.shopify.com/s/files/1/0536/7686/7775/files/EMA4_Komunardu_menu_bar_A4.pdf', tier: 'top', type: 'link', phone: '+420739797767' },
   // OSTATNI
   { id: 'kolkovna', name: 'Kolkovna', url: 'https://argentinska.kolkovna.cz/#poledni-menu', tier: 'ostatni', type: 'kolkovna', phone: '+420277008884' },
   { id: 'podparou', name: 'Pod Párou', url: 'https://podparou.eu/denni-menu/', tier: 'ostatni', type: 'podparou', phone: '+420771155446' },
