@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Denní menu</title>
 
-  <!-- Hamburger favicon (browser tab) -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍔</text></svg>" />
 
-  <!-- Apple touch icon — generated via canvas before page paints -->
   <script>
     (function () {
       try {
@@ -44,7 +42,6 @@
       background: #fff;
       border-bottom: 1px solid #e5e5ea;
       padding: 14px 16px 12px;
-      text-align: center;
       position: sticky;
       top: 0;
       z-index: 10;
@@ -61,19 +58,20 @@
       width: 100%;
     }
 
+    .header-center { text-align: center; }
+
     header h1 {
       font-size: 20px;
       font-weight: 600;
       color: #1c1c1e;
     }
 
-    header .date-line {
+    .date-line {
       font-size: 13px;
       color: #8e8e93;
       margin-top: 2px;
     }
 
-    /* Refresh icon — top right of header */
     .refresh-btn {
       position: absolute;
       right: 0;
@@ -123,7 +121,7 @@
 
     .card-row.expandable { cursor: pointer; }
     .card-row.expandable:active { background: #f2f2f7; }
-s
+
     /* Status dot */
     .status-dot {
       width: 8px;
@@ -131,7 +129,7 @@ s
       border-radius: 50%;
       flex-shrink: 0;
     }
-    .status-dot.open  { background: #34c759; }
+    .status-dot.open   { background: #34c759; }
     .status-dot.closed { background: #ff3b30; }
 
     .card-left {
@@ -139,7 +137,6 @@ s
       min-width: 0;
     }
 
-    /* Name row: chevron at end of name */
     .card-name {
       font-size: 15px;
       font-weight: 500;
@@ -156,21 +153,22 @@ s
       text-overflow: ellipsis;
     }
 
+    /* Chevron — blue, bigger, at end of name */
     .chevron {
       flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 14px;
-      height: 14px;
+      width: 18px;
+      height: 18px;
       transition: transform 0.2s ease;
-      color: #0f7cff;
+      color: #007aff;
     }
 
     .chevron svg {
       display: block;
-      width: 14px;
-      height: 14px;
+      width: 17px;
+      height: 17px;
     }
 
     .chevron.open { transform: rotate(180deg); }
@@ -239,18 +237,16 @@ s
     .menu-heading {
       font-size: 12px;
       font-weight: 600;
-      color: #8e8e93;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      margin-bottom: 4px;
+      color: #3c3c43;
+      margin-bottom: 3px;
+      margin-top: 2px;
     }
 
     .menu-item {
       font-size: 13px;
       color: #1c1c1e;
       line-height: 1.5;
-      padding: 3px 0;
-      padding-left: 10px;
+      padding: 5px 0 5px 12px;
       position: relative;
     }
 
@@ -261,7 +257,7 @@ s
       color: #c7c7cc;
     }
 
-    /* Last updated footer */
+    /* Last updated */
     .last-updated {
       text-align: center;
       font-size: 12px;
@@ -269,7 +265,7 @@ s
       padding: 8px 0 4px;
     }
 
-    /* Loading state */
+    /* Loading */
     .loading {
       text-align: center;
       padding: 40px 16px;
@@ -295,7 +291,7 @@ s
 
 <header>
   <div class="header-inner">
-    <div>
+    <div class="header-center">
       <h1>Denní menu</h1>
       <div class="date-line" id="date-label"></div>
     </div>
@@ -304,9 +300,7 @@ s
 </header>
 
 <main id="main">
-  <div class="loading">
-    <div class="spinner"></div><br>Načítám menu…
-  </div>
+  <div class="loading"><div class="spinner"></div><br>Načítám menu…</div>
 </main>
 
 <script>
@@ -318,21 +312,24 @@ s
     return `${DAYS[d.getDay()]}, ${d.getDate()}. ${MONTHS[d.getMonth()]} ${d.getFullYear()}`
   }
 
+  function formatTime(d) {
+    return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0')
+  }
+
   document.getElementById('date-label').textContent = formatDate()
 
-  // Lunch hours per restaurant (24h). Default: 11:00–15:00.
+  // Lunch hours [open_minutes, close_minutes] — default 11:00–15:00
   const LUNCH_HOURS = {
-    default:      [11*60,      15*60],
-    marinemare:   [11*60,      14*60],
-    osada:        [11*60,      14*60],
-    homekitchen:  [11*60,      15*60],
-    ema:          [8*60+30,    16*60],
-    futfack:      [11*60,      22*60],
-    hamburg:      [11*60,      14*60+30],
+    default:     [11*60,      15*60],
+    marinemare:  [11*60,      14*60],
+    osada:       [11*60,      14*60],
+    ema:         [8*60+30,    16*60],
+    futfack:     [11*60,      22*60],
+    hamburg:     [11*60,      14*60+30],
   }
 
   function isOpenNow(id) {
-    const now = new Date()
+    const now  = new Date()
     const mins = now.getHours() * 60 + now.getMinutes()
     const range = LUNCH_HOURS[id] || LUNCH_HOURS.default
     return mins >= range[0] && mins < range[1]
@@ -341,10 +338,6 @@ s
   function getDomain(url) {
     try { return new URL(url).hostname.replace(/^www\./, '') }
     catch { return url }
-  }
-
-  function formatTime(d) {
-    return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0')
   }
 
   function toggle(id) {
@@ -358,13 +351,20 @@ s
   const PHONE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.22 1.22 2 2 0 012.2 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.18 6.18l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>`
   const CHEV_SVG  = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`
 
-  // Group menu lines into sections (heading + items)
+  // Only exact short category names are treated as headings
+  const HEADING_SET = new Set([
+    'polévka','hlavní chod','hlavní jídlo','příloha','dezert','dezerty',
+    'nápoj','nápoje','salát','saláty','předkrm','předkrmy',
+    'jídlo dne 1','jídlo dne 2','jídlo dne 3','jídlo dne 4',
+  ])
+
   function buildMenuHtml(lines) {
     const sections = []
     let current = null
 
     for (const line of lines) {
-      const isHeading = /^(Polévka|Jídlo dne|Hlavní|Příloha|Dezert|Nápoj|Salát)/i.test(line)
+      const normalized = line.toLowerCase().replace(/[^a-záčďéěíňóřšťúůýž ]/g, '').trim()
+      const isHeading  = HEADING_SET.has(normalized)
       if (isHeading) {
         current = { heading: line, items: [] }
         sections.push(current)
@@ -382,11 +382,12 @@ s
   }
 
   function renderCard(r) {
-    const hasMenu = r.menu && r.menu.length > 0
-    const domain  = getDomain(r.url)
+    const hasMenu  = r.menu && r.menu.length > 0
+    const domain   = getDomain(r.url)
     const dotClass = isOpenNow(r.id) ? 'open' : 'closed'
-    const dot = `<span class="status-dot ${dotClass}"></span>`
-    const actions = (stopProp) => `
+    const dot      = `<span class="status-dot ${dotClass}"></span>`
+
+    const actionsHtml = (stopProp) => `
       <div class="card-actions"${stopProp ? ' onclick="event.stopPropagation()"' : ''}>
         <a class="btn-call" href="tel:${r.phone}">${PHONE_SVG}Zavolat</a>
         <a class="btn-open" href="${r.url}" target="_blank" rel="noopener">Otevřít ↗</a>
@@ -403,7 +404,7 @@ s
                 <span class="chevron" id="ch-${r.id}">${CHEV_SVG}</span>
               </div>
             </div>
-            ${actions(true)}
+            ${actionsHtml(true)}
           </div>
           <div class="menu-body" id="mb-${r.id}">${buildMenuHtml(r.menu)}</div>
         </div>`
@@ -416,7 +417,7 @@ s
               <div class="card-name">${r.name}</div>
               <div class="card-domain">${domain}</div>
             </div>
-            ${actions(false)}
+            ${actionsHtml(false)}
           </div>
         </div>`
     }
@@ -428,7 +429,7 @@ s
 
     let html = '<div class="tier-label">★ Top nabídka</div>'
     html += top.map(renderCard).join('')
-    html += '<div class="tier-label">☆ Ostatní</div>'
+    html += '<div class="tier-label">✔ Ostatní</div>'
     html += ostatni.map(renderCard).join('')
     html += `<div class="last-updated">Naposledy načteno dnes v ${formatTime(new Date())}</div>`
 
@@ -448,15 +449,11 @@ s
 
   // Pull-to-refresh
   let touchStartY = 0
-  let pulling = false
   document.addEventListener('touchstart', e => {
     if (window.scrollY === 0) touchStartY = e.touches[0].clientY
   }, { passive: true })
   document.addEventListener('touchend', e => {
-    if (touchStartY > 0) {
-      const diff = e.changedTouches[0].clientY - touchStartY
-      if (diff > 80) loadMenus()
-    }
+    if (touchStartY > 0 && e.changedTouches[0].clientY - touchStartY > 80) loadMenus()
     touchStartY = 0
   }, { passive: true })
 
