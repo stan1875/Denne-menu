@@ -1,22 +1,20 @@
 const RESTAURANTS = [
   // TOP
   { id: 'phillscorner', name: "Phill's Corner", url: 'https://www.phillscorner.cz/menu/', tier: 'top', type: 'webnode', phone: '+420731836988' },
-  { id: 'ctyrka', name: 'Čtyrka', url: 'https://www.ctyr-ka.cz', tier: 'top', type: 'webnode', phone: '+420736644881' },
-  { id: 'vnitroblock', name: 'Vnitroblock', url: 'https://www.vnitroblock.cz/obedove-menu', tier: 'top', type: 'link', phone: '+420732373069' },
-  { id: 'mexicka', name: 'Mexická', url: 'https://www.mexickaholesovice.cz/', tier: 'top', type: 'link', phone: '+420241952157' },
-  { id: 'ema', name: 'EMA', url: 'https://www.emaespressobar.cz/komunardu-praha-7', tier: 'top', type: 'link', phone: '+420739797767' },
-    { id: 'ema', name: 'EMA 2', url: 'https://cdn.shopify.com/s/files/1/0536/7686/7775/files/EMA4_Komunardu_menu_bar_A4.pdf', tier: 'top', type: 'link', phone: '+420739797767' },
+  { id: 'ctyrka',       name: 'Čtyrka',         url: 'https://www.ctyr-ka.cz',           tier: 'top', type: 'webnode', phone: '+420736644881' },
+  { id: 'vnitroblock',  name: 'Vnitroblock',     url: 'https://www.vnitroblock.cz/obedove-menu', tier: 'top', type: 'link', phone: '+420732373069' },
+  { id: 'mexicka',      name: 'Mexická',          url: 'https://www.mexickaholesovice.cz/menu/', tier: 'top', type: 'link', phone: '+420241952157' },
   // OSTATNI
-  { id: 'kolkovna', name: 'Kolkovna', url: 'https://argentinska.kolkovna.cz/#poledni-menu', tier: 'ostatni', type: 'kolkovna', phone: '+420277008884' },
-  { id: 'podparou', name: 'Pod Párou', url: 'https://podparou.eu/denni-menu/', tier: 'ostatni', type: 'podparou', phone: '+420771155446' },
-  { id: 'homekitchen', name: 'Home Kitchen', url: 'https://home-kitchen.cz', tier: 'ostatni', type: 'link', phone: '+420605263812' },
-  { id: 'marinemare', name: 'Marinemare', url: 'https://marinemare.cz/section:poke-do-14-00', tier: 'ostatni', type: 'link', phone: '+420773654573' },
-  { id: 'osada', name: 'Osada', url: 'https://osada.choiceqr.com/section:odpoledni-nabidka/odpoledni-nabidka', tier: 'ostatni', type: 'link', phone: '+420777509973' },
-  { id: 'puglia', name: 'Puglia', url: 'https://www.czechotel.com/puglia-menu/', tier: 'ostatni', type: 'link', phone: '+420725067949' },
-  { id: 'uholise', name: 'U Holíše', url: 'https://www.restauraceuholise.cz', tier: 'ostatni', type: 'link', phone: '+420724100440' },
-  { id: 'hamburg', name: 'Hamburg', url: 'https://www.restauracehamburg.cz', tier: 'ostatni', type: 'link', phone: '+420283872256' },
-  { id: 'eatery', name: 'The Eatery', url: 'https://www.theeatery.cz/cz/#/', tier: 'ostatni', type: 'link', phone: '+420603945236' },
-  { id: 'futfack', name: 'FutFack', url: 'https://jankovcova.ftfck.cz/section:dishes-drinks/main', tier: 'ostatni', type: 'link', phone: '+420605493123' },
+  { id: 'kolkovna',    name: 'Kolkovna',      url: 'https://argentinska.kolkovna.cz/#poledni-menu',                       tier: 'ostatni', type: 'kolkovna', phone: '+420277008884' },
+  { id: 'podparou',    name: 'Pod Párou',     url: 'https://podparou.eu/denni-menu/',                                     tier: 'ostatni', type: 'podparou', phone: '+420771155446' },
+  { id: 'homekitchen', name: 'Home Kitchen',  url: 'https://home-kitchen.cz',                                            tier: 'ostatni', type: 'link',     phone: '+420605263812' },
+  { id: 'marinemare',  name: 'Marinemare',    url: 'https://marinemare.cz/section:poke-do-14-00',                        tier: 'ostatni', type: 'link',     phone: '+420773654573' },
+  { id: 'osada',       name: 'Osada',         url: 'https://osada.choiceqr.com/section:odpoledni-nabidka/odpoledni-nabidka', tier: 'ostatni', type: 'link', phone: '+420777509973' },
+  { id: 'puglia',      name: 'Puglia',        url: 'https://www.czechotel.com/puglia-menu/',                             tier: 'ostatni', type: 'link',     phone: '+420725067949' },
+  { id: 'uholise',     name: 'U Holíše',      url: 'https://www.restauraceuholise.cz/denni-menuha',                      tier: 'ostatni', type: 'link',     phone: '+420724100440' },
+  { id: 'eatery',      name: 'The Eatery',    url: 'https://www.theeatery.cz/cz/#/',                                     tier: 'ostatni', type: 'link',     phone: '+420603945236' },
+  { id: 'futfack',     name: 'FutFack',       url: 'https://jankovcova.ftfck.cz/section:dishes-drinks/main',            tier: 'ostatni', type: 'link',     phone: '+420605493123' },
+  { id: 'polepsovna',  name: 'Polepšovna',    url: 'https://www.pivnicepolepsovna.cz/menu',                              tier: 'ostatni', type: 'link',     phone: '+420777700208' },
 ]
 
 function htmlToLines(html) {
@@ -66,9 +64,9 @@ function extractPodParou(html) {
 
 function extractKolkovna(html) {
   const text = htmlToLines(html)
-  const start = text.search(/[Pp]olévka|[Pp]ol[eé]vka/)
+  const start = text.search(/Polévka|polévka/)
   if (start === -1) return null
-  const enders = ['Dezerty', 'Nápoje', 'Snídaně', 'À la carte', 'Na čepu', '© 20']
+  const enders = ['Dezerty', 'Nápoje', 'Drinks', 'Na čepu', 'Rezervace', '© 20']
   let end = start + 2000
   for (const e of enders) {
     const pos = text.indexOf(e, start + 60)
@@ -96,9 +94,9 @@ exports.handler = async function () {
     scrapable.map(async (r) => {
       const html = await fetchSite(r.url)
       let menu = null
-      if (r.type === 'webnode') menu = extractWebnode(html)
-      else if (r.type === 'podparou') menu = extractPodParou(html)
-      else if (r.type === 'kolkovna') menu = extractKolkovna(html)
+      if (r.type === 'webnode')   menu = extractWebnode(html)
+      if (r.type === 'podparou')  menu = extractPodParou(html)
+      if (r.type === 'kolkovna')  menu = extractKolkovna(html)
       return { id: r.id, menu }
     })
   )
