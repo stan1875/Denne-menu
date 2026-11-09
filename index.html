@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DennÃ­ menu</title>
+  <title>Denní menu</title>
 
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>ð</text></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍔</text></svg>" />
 
   <script>
     (function () {
@@ -18,7 +18,7 @@
         ctx.font = '130px serif'
         ctx.textAlign = 'center'
         ctx.textBaseline = 'middle'
-        ctx.fillText('ð', 90, 98)
+        ctx.fillText('🍔', 90, 98)
         const link = document.createElement('link')
         link.rel = 'apple-touch-icon'
         link.sizes = '180x180'
@@ -153,7 +153,7 @@
       text-overflow: ellipsis;
     }
 
-    /* Chevron â blue, bigger, at end of name */
+    /* Chevron — blue, bigger, at end of name */
     .chevron {
       flex-shrink: 0;
       display: flex;
@@ -251,7 +251,7 @@
     }
 
     .menu-item::before {
-      content: 'â¢';
+      content: '•';
       position: absolute;
       left: 0;
       color: #c7c7cc;
@@ -292,20 +292,20 @@
 <header>
   <div class="header-inner">
     <div class="header-center">
-      <h1>DennÃ­ menu</h1>
+      <h1>Denní menu</h1>
       <div class="date-line" id="date-label"></div>
     </div>
-    <button class="refresh-btn" onclick="loadMenus()" title="Aktualizovat">â»</button>
+    <button class="refresh-btn" onclick="loadMenus()" title="Aktualizovat">↻</button>
   </div>
 </header>
 
 <main id="main">
-  <div class="loading"><div class="spinner"></div><br>NaÄÃ­tÃ¡m menuâ¦</div>
+  <div class="loading"><div class="spinner"></div><br>Načítám menu…</div>
 </main>
 
 <script>
-  const DAYS   = ['NedÄle','PondÄlÃ­','ÃterÃ½','StÅeda','Ätvrtek','PÃ¡tek','Sobota']
-  const MONTHS = ['ledna','Ãºnora','bÅezna','dubna','kvÄtna','Äervna','Äervence','srpna','zÃ¡ÅÃ­','ÅÃ­jna','listopadu','prosince']
+  const DAYS   = ['Neděle','Pondělí','Úterý','Středa','Čtvrtek','Pátek','Sobota']
+  const MONTHS = ['ledna','února','března','dubna','května','června','července','srpna','září','října','listopadu','prosince']
 
   function formatDate() {
     const d = new Date()
@@ -318,7 +318,7 @@
 
   document.getElementById('date-label').textContent = formatDate()
 
-  // Lunch hours [open_minutes, close_minutes] â default 11:00â15:00
+  // Lunch hours [open_minutes, close_minutes] — default 11:00–15:00
   const LUNCH_HOURS = {
     default:     [11*60,      22*60],
     marinemare:  [11*60,      14*60],
@@ -354,9 +354,9 @@
 
   // Only exact short category names are treated as headings
   const HEADING_SET = new Set([
-    'polÃ©vka','hlavnÃ­ chod','hlavnÃ­ jÃ­dlo','pÅÃ­loha','dezert','dezerty',
-    'nÃ¡poj','nÃ¡poje','salÃ¡t','salÃ¡ty','pÅedkrm','pÅedkrmy',
-    'jÃ­dlo dne 1','jÃ­dlo dne 2','jÃ­dlo dne 3','jÃ­dlo dne 4',
+    'polévka','hlavní chod','hlavní jídlo','příloha','dezert','dezerty',
+    'nápoj','nápoje','salát','saláty','předkrm','předkrmy',
+    'jídlo dne 1','jídlo dne 2','jídlo dne 3','jídlo dne 4',
   ])
 
   function buildMenuHtml(lines) {
@@ -364,7 +364,7 @@
     let current = null
 
     for (const line of lines) {
-      const normalized = line.toLowerCase().replace(/[^a-zÃ¡ÄÄÃ©ÄÃ­ÅÃ³ÅÅ¡Å¥ÃºÅ¯Ã½Å¾ ]/g, '').trim()
+      const normalized = line.toLowerCase().replace(/[^a-záčďéěíňóřšťúůýž ]/g, '').trim()
       const isHeading  = HEADING_SET.has(normalized)
       if (isHeading) {
         current = { heading: line, items: [] }
@@ -391,7 +391,7 @@
     const actionsHtml = (stopProp) => `
       <div class="card-actions"${stopProp ? ' onclick="event.stopPropagation()"' : ''}>
         <a class="btn-call" href="tel:${r.phone}">${PHONE_SVG}Zavolat</a>
-        <a class="btn-open" href="${r.url}" target="_blank" rel="noopener">OtevÅÃ­t â</a>
+        <a class="btn-open" href="${r.url}" target="_blank" rel="noopener">Otevřít ↗</a>
       </div>`
 
     if (hasMenu) {
@@ -428,23 +428,23 @@
     const top     = data.filter(r => r.tier === 'top')
     const ostatni = data.filter(r => r.tier === 'ostatni')
 
-    let html = '<div class="tier-label">â Top nabÃ­dka</div>'
+    let html = '<div class="tier-label">★ Top nabídka</div>'
     html += top.map(renderCard).join('')
-    html += '<div class="tier-label">â OstatnÃ­</div>'
+    html += '<div class="tier-label">☆ Ostatní</div>'
     html += ostatni.map(renderCard).join('')
-    html += `<div class="last-updated">Naposledy naÄteno dnes v ${formatTime(new Date())}</div>`
+    html += `<div class="last-updated">Naposledy načteno dnes v ${formatTime(new Date())}</div>`
 
     document.getElementById('main').innerHTML = html
   }
 
   async function loadMenus() {
-    document.getElementById('main').innerHTML = '<div class="loading"><div class="spinner"></div><br>NaÄÃ­tÃ¡m menuâ¦</div>'
+    document.getElementById('main').innerHTML = '<div class="loading"><div class="spinner"></div><br>Načítám menu…</div>'
     try {
       const res  = await fetch('/.netlify/functions/menus')
       const data = await res.json()
       renderAll(data)
     } catch (e) {
-      document.getElementById('main').innerHTML = '<div class="loading">Chyba pÅi naÄÃ­tÃ¡nÃ­. Zkuste to znovu.</div>'
+      document.getElementById('main').innerHTML = '<div class="loading">Chyba při načítání. Zkuste to znovu.</div>'
     }
   }
 
